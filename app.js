@@ -29,6 +29,8 @@ maxNum.textContent = max;
 // Listen for guess 
 
 guessBtn.addEventListener('click', function () {
+  document.querySelector('.message').style.display = 'block';
+
   let guess = parseInt(guessInput.value); // Inputs return a string
 
   // Validate
@@ -38,19 +40,51 @@ guessBtn.addEventListener('click', function () {
 
   // Check if won
   if (guess === winningNum) {
-    // Disable input
-    guessInput.disabled = true; //A disabled element is unusable and un-clickable. Disabled elements are usually rendered in gray by default in browsers.
+    // Game over - won
 
-    // Change color
-    guessInput.style.borderColor = 'green';
-    // Set message
-    setMessage(`${winningNum} is correct! You win`, 'green')
+    gameOver(true, `${winningNum} is correct! You win`);
+
+  } else {
+    // Wrong number
+    guessesLeft -= 1;
+
+    if (guessesLeft === 0) { //Game over lost
+
+      gameOver(false, `Game Over, you lost. The correct number was ${winningNum}`);
+    } else {
+      // Game continues - answer wrong
+
+      // Tell user its the wrong number
+      setMessage(`${guess} is not correct, ${guessesLeft} guesses left`, 'red');
+
+      guessInput.value = '';
+    }
   }
 
+
+
+
 })
+
+// Game over 
+function gameOver(won, msg) {
+  let color;
+  won === true ? color = "green" : color = "red";
+
+  // Disable input
+  guessInput.disabled = true;
+
+  // Change color
+  guessInput.style.borderColor = color;
+  // Set message
+  setMessage(msg, color);
+}
 
 // Set Message
 function setMessage(msg, color) {
   message.style.color = color;
   message.textContent = msg;
+
 }
+
+
