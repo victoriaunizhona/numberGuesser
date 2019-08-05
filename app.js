@@ -10,7 +10,7 @@ Game function:
 //Game values
 let min = 1,
   max = 12,
-  winningNum = 2,
+  winningNum = getWinningNum(min, max),
   guessesLeft = 3;
 
 // UI Elements
@@ -26,6 +26,13 @@ const game = document.querySelector('#game'),
 minNum.textContent = min; //The textContent property sets or returns the text content of the specified node, and all its descendants.
 maxNum.textContent = max;
 
+// Play again even listener
+game.addEventListener('mousedown', function (e) { //The mousedown event is fired at an Element when a pointing device button is pressed while the pointer is inside the element.
+  if (e.target.className === "play-again") {
+    window.location.reload();
+  }
+})
+
 // Listen for guess 
 
 guessBtn.addEventListener('click', function () {
@@ -35,13 +42,12 @@ guessBtn.addEventListener('click', function () {
 
   // Validate
   if (isNaN(guess) || guess < min || guess > max) {
-    setMessage(`Please enter a number between ${min} and ${max}`, 'red')
+    setMessage(`Please enter a number between ${min} and ${max}`, 'red');
+
   } // isNaN checks if it is NaN
 
   // Check if won
-  if (guess === winningNum) {
-    // Game over - won
-
+  if (guess === winningNum) { // Game over - won
     gameOver(true, `${winningNum} is correct! You win`);
 
   } else {
@@ -49,14 +55,12 @@ guessBtn.addEventListener('click', function () {
     guessesLeft -= 1;
 
     if (guessesLeft === 0) { //Game over lost
-
       gameOver(false, `Game Over, you lost. The correct number was ${winningNum}`);
+
     } else {
       // Game continues - answer wrong
-
       // Tell user its the wrong number
       setMessage(`${guess} is not correct, ${guessesLeft} guesses left`, 'red');
-
       guessInput.value = '';
     }
   }
@@ -78,6 +82,18 @@ function gameOver(won, msg) {
   guessInput.style.borderColor = color;
   // Set message
   setMessage(msg, color);
+
+  // Play again?
+  guessBtn.value = "Play Again";
+  guessBtn.className += "play-again";
+
+
+}
+
+// Get Winning Number
+function getWinningNum(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min; //The Math.floor() function returns the largest integer less than or equal to a given number.
+  // https://teamtreehouse.com/community/mathfloor-mathrandom-max-min-1-min-explanation
 }
 
 // Set Message
